@@ -1,0 +1,48 @@
+package com.aleprimo.plantilla_backend.persistence;
+
+import com.aleprimo.plantilla_backend.model.UserEntity;
+import com.aleprimo.plantilla_backend.repository.UserRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+public class UserDAOImpl implements UserDAO{
+
+    private final UserRepository userRepository;
+
+
+    public UserDAOImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+
+    @Override
+    public Optional<UserEntity> findByUsername(String username) {
+        return this.userRepository.findByUsername(username);
+    }
+
+    @Override
+    public Optional<UserEntity> findByEmail(String email) {
+        return this.userRepository.findByEmail(email);
+    }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        return this.userRepository.existsByUsername(username);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return this.userRepository.existsByEmail(email);
+    }
+
+    @Override
+    public List<UserEntity> findByEnabledTrue() {
+        return this.userRepository.findByEnabledTrue();
+    }
+
+    @Override
+    public List<UserEntity> findByRoleName(String roleName) {
+        return this.userRepository.findByRoleName(roleName);
+    }
+}
