@@ -17,6 +17,27 @@ public class UserDAOImpl implements UserDAO{
 
 
     @Override
+    public UserEntity save(UserEntity user) {
+        return this.userRepository.save(user);
+    }
+
+    @Override
+    public Optional<UserEntity> findById(Long id) {
+        return this.userRepository.findById(id);
+    }
+
+    @Override
+    public List<UserEntity> findAll() {
+        return this.userRepository.findAll();
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        this.userRepository.deleteById(id);
+
+    }
+
+    @Override
     public Optional<UserEntity> findByUsername(String username) {
         return this.userRepository.findByUsername(username);
     }

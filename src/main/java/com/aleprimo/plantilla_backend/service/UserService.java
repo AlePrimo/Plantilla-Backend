@@ -1,4 +1,4 @@
-package com.aleprimo.plantilla_backend.persistence;
+package com.aleprimo.plantilla_backend.service;
 
 import com.aleprimo.plantilla_backend.model.UserEntity;
 import org.springframework.data.jpa.repository.Query;
@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserDAO {
+public interface UserService {
 
     UserEntity save(UserEntity user);
     Optional<UserEntity> findById(Long id);
