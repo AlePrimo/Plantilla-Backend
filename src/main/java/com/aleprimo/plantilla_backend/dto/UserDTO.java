@@ -33,6 +33,6 @@ public class UserDTO {
     String password;
     Set<String> roles;
     Boolean enabled;
-   
+
 
 }
