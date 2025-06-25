@@ -1,8 +1,9 @@
 package com.aleprimo.plantilla_backend.dto;
 
-import com.aleprimo.plantilla_backend.model.Role;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -31,6 +32,9 @@ public class UserDTO {
     @NotBlank(message = "La contraseña es obligatoria")
     @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
     String password;
+    @PastOrPresent(message = "La fecha de creación no puede ser futura")
+    LocalDateTime createdDate;
+
     Set<String> roles;
     Boolean enabled;
 
