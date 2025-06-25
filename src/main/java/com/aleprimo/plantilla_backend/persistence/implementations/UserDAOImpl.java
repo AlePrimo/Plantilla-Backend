@@ -3,19 +3,18 @@ package com.aleprimo.plantilla_backend.persistence.implementations;
 import com.aleprimo.plantilla_backend.model.UserEntity;
 import com.aleprimo.plantilla_backend.persistence.UserDAO;
 import com.aleprimo.plantilla_backend.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
+
+@Repository
+@RequiredArgsConstructor
 public class UserDAOImpl implements UserDAO {
 
     private final UserRepository userRepository;
-
-
-    public UserDAOImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
 
     @Override
     public UserEntity save(UserEntity user) {
