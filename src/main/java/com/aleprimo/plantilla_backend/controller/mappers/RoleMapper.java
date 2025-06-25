@@ -1,4 +1,4 @@
-package com.aleprimo.plantilla_backend.controller;
+package com.aleprimo.plantilla_backend.controller.mappers;
 
 import com.aleprimo.plantilla_backend.dto.RoleDTO;
 import com.aleprimo.plantilla_backend.model.Role;
