@@ -1,0 +1,43 @@
+package com.aleprimo.plantilla_backend.service;
+
+import com.aleprimo.plantilla_backend.model.Role;
+import com.aleprimo.plantilla_backend.model.RoleName;
+import com.aleprimo.plantilla_backend.persistence.RoleDAO;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+@RequiredArgsConstructor
+public class RoleServiceImpl implements RoleService{
+
+    private final RoleDAO roleDAO;
+
+
+    @Override
+    public Role save(Role role) {
+        return this.roleDAO.save(role);
+    }
+
+    @Override
+    public Optional<Role> findById(Long id) {
+        return this.roleDAO.findById(id);
+    }
+
+    @Override
+    public Optional<Role> findByRoleName(RoleName role) {
+        return this.roleDAO.findByRoleName(role);
+    }
+
+    @Override
+    public List<Role> findAll() {
+        return this.roleDAO.findAll();
+    }
+
+    @Override
+    public void delete(Long id) {
+this.roleDAO.delete(id);
+    }
+}

@@ -37,4 +37,9 @@ public class RoleDAOImpl implements RoleDAO{
     public List<Role> findAll() {
         return this.roleRepository.findAll();
     }
+
+    @Override
+    public void delete(Long id) {
+        this.roleRepository.deleteById(id);
+    }
 }
