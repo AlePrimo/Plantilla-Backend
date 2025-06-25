@@ -1,16 +1,16 @@
-package com.aleprimo.plantilla_backend.persistence;
+package com.aleprimo.plantilla_backend.persistence.implementations;
 
 import com.aleprimo.plantilla_backend.model.Role;
 import com.aleprimo.plantilla_backend.model.RoleName;
+import com.aleprimo.plantilla_backend.persistence.RoleDAO;
 import com.aleprimo.plantilla_backend.repository.RoleRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class RoleDAOImpl implements RoleDAO{
+public class RoleDAOImpl implements RoleDAO {
 
     private final RoleRepository roleRepository;
 

@@ -1,12 +1,13 @@
-package com.aleprimo.plantilla_backend.persistence;
+package com.aleprimo.plantilla_backend.persistence.implementations;
 
 import com.aleprimo.plantilla_backend.model.UserEntity;
+import com.aleprimo.plantilla_backend.persistence.UserDAO;
 import com.aleprimo.plantilla_backend.repository.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public class UserDAOImpl implements UserDAO{
+public class UserDAOImpl implements UserDAO {
 
     private final UserRepository userRepository;
 

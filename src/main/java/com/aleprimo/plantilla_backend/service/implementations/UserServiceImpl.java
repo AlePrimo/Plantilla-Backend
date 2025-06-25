@@ -1,4 +1,4 @@
-package com.aleprimo.plantilla_backend.service;
+package com.aleprimo.plantilla_backend.service.implementations;
 
 import com.aleprimo.plantilla_backend.model.Role;
 import com.aleprimo.plantilla_backend.model.RoleName;
@@ -6,6 +6,7 @@ import com.aleprimo.plantilla_backend.model.UserEntity;
 import com.aleprimo.plantilla_backend.persistence.RoleDAO;
 import com.aleprimo.plantilla_backend.persistence.UserDAO;
 
+import com.aleprimo.plantilla_backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private final UserDAO userDAO;
     private final RoleDAO roleDAO;
