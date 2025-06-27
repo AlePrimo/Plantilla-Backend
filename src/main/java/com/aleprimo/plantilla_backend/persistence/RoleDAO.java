@@ -1,7 +1,7 @@
 package com.aleprimo.plantilla_backend.persistence;
 
-import com.aleprimo.plantilla_backend.model.Role;
-import com.aleprimo.plantilla_backend.model.RoleName;
+import com.aleprimo.plantilla_backend.models.Role;
+import com.aleprimo.plantilla_backend.models.RoleName;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,4 +1,4 @@
-package com.aleprimo.plantilla_backend.model;
+package com.aleprimo.plantilla_backend.models;
 
 import jakarta.persistence.*;
 import lombok.*;

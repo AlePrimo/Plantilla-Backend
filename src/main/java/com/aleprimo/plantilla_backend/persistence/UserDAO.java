@@ -1,6 +1,6 @@
 package com.aleprimo.plantilla_backend.persistence;
 
-import com.aleprimo.plantilla_backend.model.UserEntity;
+import com.aleprimo.plantilla_backend.models.UserEntity;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 

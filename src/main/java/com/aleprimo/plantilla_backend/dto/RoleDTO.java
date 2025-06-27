@@ -1,7 +1,7 @@
 package com.aleprimo.plantilla_backend.dto;
 
 
-import com.aleprimo.plantilla_backend.model.RoleName;
+import com.aleprimo.plantilla_backend.models.RoleName;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;

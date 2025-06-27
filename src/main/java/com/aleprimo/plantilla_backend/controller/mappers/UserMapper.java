@@ -1,9 +1,9 @@
 package com.aleprimo.plantilla_backend.controller.mappers;
 
 import com.aleprimo.plantilla_backend.dto.UserDTO;
-import com.aleprimo.plantilla_backend.model.Role;
-import com.aleprimo.plantilla_backend.model.RoleName;
-import com.aleprimo.plantilla_backend.model.UserEntity;
+import com.aleprimo.plantilla_backend.models.Role;
+import com.aleprimo.plantilla_backend.models.RoleName;
+import com.aleprimo.plantilla_backend.models.UserEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;

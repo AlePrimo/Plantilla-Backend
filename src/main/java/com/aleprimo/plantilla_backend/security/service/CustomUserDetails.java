@@ -1,6 +1,6 @@
 package com.aleprimo.plantilla_backend.security.service;
 
-import com.aleprimo.plantilla_backend.model.UserEntity;
+import com.aleprimo.plantilla_backend.models.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

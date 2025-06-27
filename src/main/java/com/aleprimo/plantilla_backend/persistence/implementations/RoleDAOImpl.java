@@ -1,7 +1,7 @@
 package com.aleprimo.plantilla_backend.persistence.implementations;
 
-import com.aleprimo.plantilla_backend.model.Role;
-import com.aleprimo.plantilla_backend.model.RoleName;
+import com.aleprimo.plantilla_backend.models.Role;
+import com.aleprimo.plantilla_backend.models.RoleName;
 import com.aleprimo.plantilla_backend.persistence.RoleDAO;
 import com.aleprimo.plantilla_backend.repository.RoleRepository;
 import org.springframework.stereotype.Repository;

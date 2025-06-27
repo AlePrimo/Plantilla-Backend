@@ -1,12 +1,12 @@
-package com.aleprimo.plantilla_backend.service.implementations;
+package com.aleprimo.plantilla_backend.entityServices.implementations;
 
-import com.aleprimo.plantilla_backend.model.Role;
-import com.aleprimo.plantilla_backend.model.RoleName;
-import com.aleprimo.plantilla_backend.model.UserEntity;
+import com.aleprimo.plantilla_backend.models.Role;
+import com.aleprimo.plantilla_backend.models.RoleName;
+import com.aleprimo.plantilla_backend.models.UserEntity;
 import com.aleprimo.plantilla_backend.persistence.RoleDAO;
 import com.aleprimo.plantilla_backend.persistence.UserDAO;
 
-import com.aleprimo.plantilla_backend.service.UserService;
+import com.aleprimo.plantilla_backend.entityServices.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

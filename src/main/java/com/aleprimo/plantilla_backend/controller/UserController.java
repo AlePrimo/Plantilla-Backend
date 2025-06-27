@@ -3,8 +3,8 @@ package com.aleprimo.plantilla_backend.controller;
 
 import com.aleprimo.plantilla_backend.controller.mappers.UserMapper;
 import com.aleprimo.plantilla_backend.dto.UserDTO;
-import com.aleprimo.plantilla_backend.model.UserEntity;
-import com.aleprimo.plantilla_backend.service.UserService;
+import com.aleprimo.plantilla_backend.models.UserEntity;
+import com.aleprimo.plantilla_backend.entityServices.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
