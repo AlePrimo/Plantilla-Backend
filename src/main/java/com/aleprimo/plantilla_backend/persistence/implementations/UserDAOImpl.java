@@ -1,5 +1,6 @@
 package com.aleprimo.plantilla_backend.persistence.implementations;
 
+import com.aleprimo.plantilla_backend.models.RoleName;
 import com.aleprimo.plantilla_backend.models.UserEntity;
 import com.aleprimo.plantilla_backend.persistence.UserDAO;
 import com.aleprimo.plantilla_backend.repository.UserRepository;
@@ -63,7 +64,7 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public List<UserEntity> findByRoleName(String roleName) {
+    public List<UserEntity> findByRoleName(RoleName roleName) {
         return this.userRepository.findByRoleName(roleName);
     }
 }

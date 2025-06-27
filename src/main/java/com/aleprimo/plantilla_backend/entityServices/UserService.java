@@ -1,5 +1,6 @@
 package com.aleprimo.plantilla_backend.entityServices;
 
+import com.aleprimo.plantilla_backend.models.RoleName;
 import com.aleprimo.plantilla_backend.models.UserEntity;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,6 +20,6 @@ public interface UserService {
     boolean existsByEmail(String email);
     List<UserEntity> findByEnabledTrue();
     @Query("SELECT u FROM UserEntity u JOIN u.roles r WHERE r.name = :roleName")
-    List<UserEntity> findByRoleName(@Param("roleName") String roleName);
+    List<UserEntity> findByRoleName(@Param("roleName") RoleName roleName);
 
 }

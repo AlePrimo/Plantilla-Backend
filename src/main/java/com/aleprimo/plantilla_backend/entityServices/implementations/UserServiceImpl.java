@@ -86,7 +86,7 @@ this.userDAO.deleteById(id);
     }
 
     @Override
-    public List<UserEntity> findByRoleName(String roleName) {
+    public List<UserEntity> findByRoleName(RoleName roleName) {
         return this.userDAO.findByRoleName(roleName);
     }
 }

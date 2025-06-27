@@ -1,5 +1,6 @@
 package com.aleprimo.plantilla_backend.repository;
 
+import com.aleprimo.plantilla_backend.models.RoleName;
 import com.aleprimo.plantilla_backend.models.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,7 +19,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     boolean existsByEmail(String email);
     List<UserEntity> findByEnabledTrue();
     @Query("SELECT u FROM UserEntity u JOIN u.roles r WHERE r.name = :roleName")
-    List<UserEntity> findByRoleName(@Param("roleName") String roleName);
+    List<UserEntity> findByRoleName(@Param("roleName") RoleName roleName);
 
 
 
