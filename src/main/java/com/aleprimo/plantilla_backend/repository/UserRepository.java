@@ -17,8 +17,9 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
     List<UserEntity> findByEnabledTrue();
-    @Query("SELECT u FROM User u JOIN u.roles r WHERE r.name = :roleName")
+    @Query("SELECT u FROM UserEntity u JOIN u.roles r WHERE r.name = :roleName")
     List<UserEntity> findByRoleName(@Param("roleName") String roleName);
+
 
 
 
