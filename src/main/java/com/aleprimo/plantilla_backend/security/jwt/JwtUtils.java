@@ -1,4 +1,4 @@
-package com.aleprimo.plantilla_backend.config;
+package com.aleprimo.plantilla_backend.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

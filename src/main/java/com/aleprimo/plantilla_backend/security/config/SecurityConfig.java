@@ -1,5 +1,6 @@
-package com.aleprimo.plantilla_backend.config;
+package com.aleprimo.plantilla_backend.security.config;
 
+import com.aleprimo.plantilla_backend.security.jwt.JwtTokenFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

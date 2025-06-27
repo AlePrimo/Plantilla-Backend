@@ -1,4 +1,4 @@
-package com.aleprimo.plantilla_backend.config;
+package com.aleprimo.plantilla_backend.security.jwt;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
