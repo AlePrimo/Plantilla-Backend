@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("El nombre de usuario ya existe.");
         }
 
-        Role roleUser = this.roleDAO.findByRoleName(RoleName.ROLE_USER)
+        Role roleUser = this.roleDAO.findByName(RoleName.ROLE_USER)
                 .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));

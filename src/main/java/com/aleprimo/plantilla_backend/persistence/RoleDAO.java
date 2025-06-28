@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface RoleDAO {
     Role save(Role role);
     Optional<Role> findById(Long id);
-    Optional<Role> findByRoleName(RoleName role);
+    Optional<Role> findByName(RoleName role);
     List<Role> findAll();
     void delete(Long id);
 }

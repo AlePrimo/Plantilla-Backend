@@ -2,11 +2,14 @@ package com.aleprimo.plantilla_backend.controller;
 
 import com.aleprimo.plantilla_backend.controller.mappers.RoleMapper;
 import com.aleprimo.plantilla_backend.dto.RoleDTO;
+import com.aleprimo.plantilla_backend.entityServices.RoleService;
+
 import com.aleprimo.plantilla_backend.models.Role;
 import com.aleprimo.plantilla_backend.models.RoleName;
-import com.aleprimo.plantilla_backend.entityServices.RoleService;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +23,6 @@ public class RoleController {
 
     private final RoleService roleService;
     private final RoleMapper roleMapper;
-
 
     @PostMapping("/create")
     public ResponseEntity<RoleDTO> createRole(@Valid @RequestBody RoleDTO roleDTO) {
@@ -40,7 +42,7 @@ public class RoleController {
 
     @GetMapping("/name/{roleName}")
     public ResponseEntity<RoleDTO> getRoleByName(@PathVariable RoleName roleName) {
-        return roleService.findByRoleName(roleName)
+        return roleService.findByName(roleName)
                 .map(role -> ResponseEntity.ok(roleMapper.toDto(role)))
                 .orElse(ResponseEntity.notFound().build());
     }

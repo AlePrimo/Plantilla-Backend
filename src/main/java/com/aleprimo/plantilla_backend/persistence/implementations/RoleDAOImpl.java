@@ -4,6 +4,7 @@ import com.aleprimo.plantilla_backend.models.Role;
 import com.aleprimo.plantilla_backend.models.RoleName;
 import com.aleprimo.plantilla_backend.persistence.RoleDAO;
 import com.aleprimo.plantilla_backend.repository.RoleRepository;
+
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -29,8 +30,8 @@ public class RoleDAOImpl implements RoleDAO {
     }
 
     @Override
-    public Optional<Role> findByRoleName(RoleName role) {
-        return this.roleRepository.findByRoleName(role);
+    public Optional<Role> findByName(RoleName role) {
+        return this.roleRepository.findByName(role);
     }
 
     @Override

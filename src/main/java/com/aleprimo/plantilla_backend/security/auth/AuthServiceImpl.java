@@ -49,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("El email ya está en uso");
         }
 
-        Role roleUser = roleDAO.findByRoleName(RoleName.ROLE_USER)
+        Role roleUser = roleDAO.findByName(RoleName.ROLE_USER)
                 .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
 
         UserEntity newUser = UserEntity.builder()

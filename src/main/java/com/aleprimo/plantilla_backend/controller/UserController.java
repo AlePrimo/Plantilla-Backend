@@ -3,6 +3,7 @@ package com.aleprimo.plantilla_backend.controller;
 
 import com.aleprimo.plantilla_backend.controller.mappers.UserMapper;
 import com.aleprimo.plantilla_backend.dto.UserDTO;
+import com.aleprimo.plantilla_backend.models.RoleName;
 import com.aleprimo.plantilla_backend.models.UserEntity;
 import com.aleprimo.plantilla_backend.entityServices.UserService;
 import jakarta.validation.Valid;
@@ -90,7 +91,7 @@ public class UserController {
 
 
     @GetMapping("/role/{roleName}")
-    public ResponseEntity<List<UserDTO>> getUsersByRole(@PathVariable String roleName) {
+    public ResponseEntity<List<UserDTO>> getUsersByRole(@PathVariable RoleName roleName) {
         List<UserDTO> users = userService.findByRoleName(roleName)
                 .stream()
                 .map(userMapper::toDto)

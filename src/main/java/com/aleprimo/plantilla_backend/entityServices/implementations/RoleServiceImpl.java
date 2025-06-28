@@ -5,6 +5,7 @@ import com.aleprimo.plantilla_backend.models.RoleName;
 import com.aleprimo.plantilla_backend.persistence.RoleDAO;
 import com.aleprimo.plantilla_backend.entityServices.RoleService;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,8 +29,8 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Optional<Role> findByRoleName(RoleName role) {
-        return this.roleDAO.findByRoleName(role);
+    public Optional<Role> findByName(RoleName role) {
+        return this.roleDAO.findByName(role);
     }
 
     @Override
