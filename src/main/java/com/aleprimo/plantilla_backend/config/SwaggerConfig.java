@@ -17,7 +17,7 @@ public class SwaggerConfig {
                         .version("1.0.0")
                         .contact(new Contact()
                                 .name("Alejandro")
-                                .email("tuemail@example.com")
+                                .email("alejandrojuliancarullo@gmail.com")
                                 .url("https://github.com/AlePrimo/Plantilla-Backend")));
     }
 
