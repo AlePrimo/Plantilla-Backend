@@ -1,8 +1,8 @@
 package com.aleprimo.plantilla_backend.security.auth;
 
-import com.aleprimo.plantilla_backend.handler.EmailAlreadyExistsException;
-import com.aleprimo.plantilla_backend.handler.RoleNotFoundException;
-import com.aleprimo.plantilla_backend.handler.UserNotFoundException;
+import com.aleprimo.plantilla_backend.handler.exceptions.EmailAlreadyExistsException;
+import com.aleprimo.plantilla_backend.handler.exceptions.RoleNotFoundException;
+import com.aleprimo.plantilla_backend.handler.exceptions.UserNotFoundException;
 import com.aleprimo.plantilla_backend.security.jwt.JwtUtils;
 import com.aleprimo.plantilla_backend.models.Role;
 import com.aleprimo.plantilla_backend.models.RoleName;

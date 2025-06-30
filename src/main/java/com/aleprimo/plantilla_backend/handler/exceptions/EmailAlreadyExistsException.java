@@ -1,4 +1,4 @@
-package com.aleprimo.plantilla_backend.handler;
+package com.aleprimo.plantilla_backend.handler.exceptions;
 
 public class EmailAlreadyExistsException extends RuntimeException {
     public EmailAlreadyExistsException(String email) {

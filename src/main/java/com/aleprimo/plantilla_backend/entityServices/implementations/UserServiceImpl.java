@@ -1,7 +1,7 @@
 package com.aleprimo.plantilla_backend.entityServices.implementations;
 
-import com.aleprimo.plantilla_backend.handler.RoleNotFoundException;
-import com.aleprimo.plantilla_backend.handler.UsernameAlreadyExistsException;
+import com.aleprimo.plantilla_backend.handler.exceptions.RoleNotFoundException;
+import com.aleprimo.plantilla_backend.handler.exceptions.UsernameAlreadyExistsException;
 import com.aleprimo.plantilla_backend.models.Role;
 import com.aleprimo.plantilla_backend.models.RoleName;
 import com.aleprimo.plantilla_backend.models.UserEntity;
