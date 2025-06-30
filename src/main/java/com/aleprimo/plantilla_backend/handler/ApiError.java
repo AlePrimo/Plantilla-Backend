@@ -17,11 +17,11 @@ public class ApiError {
     String path;
     LocalDateTime timestamp;
 
-    public ApiError(int status, String message, String path) {
+    public ApiError(int status, String message, String path, LocalDateTime timestamp) {
         this.status = status;
         this.message = message;
         this.path = path;
-        this.timestamp = LocalDateTime.now();
+        this.timestamp = timestamp;
     }
 
 }

@@ -1,5 +1,8 @@
 package com.aleprimo.plantilla_backend.security.auth;
 
+import com.aleprimo.plantilla_backend.handler.EmailAlreadyExistsException;
+import com.aleprimo.plantilla_backend.handler.RoleNotFoundException;
+import com.aleprimo.plantilla_backend.handler.UserNotFoundException;
 import com.aleprimo.plantilla_backend.security.jwt.JwtUtils;
 import com.aleprimo.plantilla_backend.models.Role;
 import com.aleprimo.plantilla_backend.models.RoleName;
@@ -34,7 +37,7 @@ public class AuthServiceImpl implements AuthService {
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String token = jwtUtils.generateToken(userDetails);
-        UserEntity user = userDAO.findByEmail(request.getEmail()).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        UserEntity user = userDAO.findByEmail(request.getEmail()).orElseThrow(() -> new UserNotFoundException("email", request.getEmail()));
 
         return AuthResponse.builder()
                 .token(token)
@@ -46,11 +49,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public UserEntity register(RegisterRequest request) {
         if (userDAO.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("El email ya está en uso");
+            throw new EmailAlreadyExistsException(request.getEmail());
         }
 
         Role roleUser = roleDAO.findByName(RoleName.ROLE_USER)
-                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+                .orElseThrow(() -> new RoleNotFoundException(RoleName.ROLE_USER));
 
         UserEntity newUser = UserEntity.builder()
                 .username(request.getUsername())

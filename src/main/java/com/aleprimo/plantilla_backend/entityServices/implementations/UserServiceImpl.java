@@ -1,5 +1,7 @@
 package com.aleprimo.plantilla_backend.entityServices.implementations;
 
+import com.aleprimo.plantilla_backend.handler.RoleNotFoundException;
+import com.aleprimo.plantilla_backend.handler.UsernameAlreadyExistsException;
 import com.aleprimo.plantilla_backend.models.Role;
 import com.aleprimo.plantilla_backend.models.RoleName;
 import com.aleprimo.plantilla_backend.models.UserEntity;
@@ -31,11 +33,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserEntity save(UserEntity user) {
         if(this.userDAO.existsByUsername(user.getUsername())){
-            throw new RuntimeException("El nombre de usuario ya existe.");
+            throw new UsernameAlreadyExistsException(user.getUsername());
         }
 
         Role roleUser = this.roleDAO.findByName(RoleName.ROLE_USER)
-                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+                .orElseThrow(() -> new RoleNotFoundException(RoleName.ROLE_USER));
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(Set.of(roleUser));
