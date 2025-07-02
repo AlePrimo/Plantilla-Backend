@@ -1,6 +1,6 @@
 package com.aleprimo.plantilla_backend.controller;
 
-import com.aleprimo.plantilla_backend.config.TestSecurityConfig;
+
 import com.aleprimo.plantilla_backend.dto.UserDTO;
 import com.aleprimo.plantilla_backend.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +15,7 @@ import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactor
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+
 import org.springframework.http.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -29,13 +29,12 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-//@ActiveProfiles("test")
-//
-//@Import(TestSecurityConfig.class)
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        classes = {com.aleprimo.plantilla_backend.PlantillaBackendApplication.class, UserControllerTest.TestSecurityConfiguration.class}
+        classes = {
+                com.aleprimo.plantilla_backend.PlantillaBackendApplication.class,
+                UserControllerTest.TestSecurityConfiguration.class
+        }
 )
 @ActiveProfiles("test")
 class UserControllerTest {
@@ -155,6 +154,11 @@ class UserControllerTest {
             return new TomcatServletWebServerFactory();
         }
 
+        @Bean
+        public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+            return configuration.getAuthenticationManager();
+        }
+        @Bean
         public PasswordEncoder passwordEncoder() {
             return new BCryptPasswordEncoder();
         }
