@@ -2,7 +2,11 @@ package com.aleprimo.plantilla_backend.controller;
 
 
 import com.aleprimo.plantilla_backend.dto.UserDTO;
+import com.aleprimo.plantilla_backend.models.Role;
+import com.aleprimo.plantilla_backend.models.RoleName;
+import com.aleprimo.plantilla_backend.repository.RoleRepository;
 import com.aleprimo.plantilla_backend.repository.UserRepository;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +28,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 
@@ -37,6 +42,8 @@ import static org.assertj.core.api.Assertions.assertThat;
         }
 )
 @ActiveProfiles("test")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+
 class UserControllerTest {
 
     @LocalServerPort
@@ -48,11 +55,20 @@ class UserControllerTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private RoleRepository roleRepository;
+
     private String baseUrl;
 
     @BeforeEach
     void setUp() {
+        userRepository.deleteAll();
         baseUrl = "http://localhost:" + port + "/api/users";
+        roleRepository.deleteAll(); // limpieza previa
+
+        Role roleUser = new Role();
+        roleUser.setName(RoleName.ROLE_USER);
+        roleRepository.save(roleUser);
     }
 
 
@@ -118,9 +134,9 @@ class UserControllerTest {
     @Test
     void updateUser_shouldReturnNotFound_whenIdDoesNotExist() {
         UserDTO user = UserDTO.builder()
-                .username("otro")
-                .email("otro@email.com")
-                .password("otro")
+                .username("usuarioInexistenteXYZ")
+                .email("inexistenteXYZ@mail.com")
+                .password("contrasenaValida123") // al menos 6 caracteres
                 .build();
 
         HttpHeaders headers = new HttpHeaders();
@@ -129,6 +145,7 @@ class UserControllerTest {
 
         ResponseEntity<UserDTO> response = restTemplate.exchange(
                 baseUrl + "/update/9999", HttpMethod.PUT, request, UserDTO.class);
+
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
