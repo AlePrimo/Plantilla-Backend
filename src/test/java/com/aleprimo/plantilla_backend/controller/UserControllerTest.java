@@ -1,18 +1,42 @@
 package com.aleprimo.plantilla_backend.controller;
 
+import com.aleprimo.plantilla_backend.config.TestSecurityConfig;
 import com.aleprimo.plantilla_backend.dto.UserDTO;
 import com.aleprimo.plantilla_backend.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.*;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.context.ActiveProfiles;
+
+
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+//@ActiveProfiles("test")
+//
+//@Import(TestSecurityConfig.class)
+@SpringBootTest(
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        classes = {com.aleprimo.plantilla_backend.PlantillaBackendApplication.class, UserControllerTest.TestSecurityConfiguration.class}
+)
 @ActiveProfiles("test")
 class UserControllerTest {
 
@@ -31,6 +55,10 @@ class UserControllerTest {
     void setUp() {
         baseUrl = "http://localhost:" + port + "/api/users";
     }
+
+
+
+
 
     @Test
     void getAllUsers_shouldReturnOk() {
@@ -111,4 +139,27 @@ class UserControllerTest {
                 baseUrl + "/delete/9999", HttpMethod.DELETE, null, Void.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
+
+    @Configuration
+    static class TestSecurityConfiguration {
+        @Bean
+        public SecurityFilterChain testSecurityFilterChain(HttpSecurity http) throws Exception {
+            http.csrf(AbstractHttpConfigurer::disable)
+                    .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+            return http.build();
+        }
+
+
+        @Bean
+        public ServletWebServerFactory servletWebServerFactory() {
+            return new TomcatServletWebServerFactory();
+        }
+
+        public PasswordEncoder passwordEncoder() {
+            return new BCryptPasswordEncoder();
+        }
+    }
+
+
+
 }
