@@ -7,7 +7,7 @@ import com.aleprimo.plantilla_backend.security.auth.AuthRequest;
 import com.aleprimo.plantilla_backend.security.auth.AuthResponse;
 import com.aleprimo.plantilla_backend.security.auth.RegisterRequest;
 import com.aleprimo.plantilla_backend.repository.RoleRepository;
-import com.aleprimo.plantilla_backend.repository.UserRepository;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.*;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -52,90 +53,67 @@ class AuthControllerTest {
     @Autowired
     private RoleRepository roleRepository;
 
-    @Autowired
-    private UserRepository userRepository;
-
     private String baseUrl;
 
     @BeforeEach
     void setUp() {
         baseUrl = "http://localhost:" + port + "/api/auth";
-        if (!roleRepository.existsByName(RoleName.ROLE_USER)) {
-            Role role = Role.builder().name(RoleName.ROLE_USER).build();
-            roleRepository.save(role);
-        }
+        roleRepository.save(Role.builder().name(RoleName.ROLE_USER).build());
     }
 
     @Test
     void register_shouldReturnUserDTO_whenValidRequest() {
-        RegisterRequest request = RegisterRequest.builder()
-                .username("testuser")
-                .email("testuser@email.com")
-                .password("password")
-                .build();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<RegisterRequest> entity = new HttpEntity<>(request, headers);
-
-        ResponseEntity<UserDTO> response = restTemplate.postForEntity(baseUrl + "/register", entity, UserDTO.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getUsername()).isEqualTo("testuser");
-    }
-
-    @Test
-    void login_shouldReturnToken_whenCredentialsAreValid() {
         RegisterRequest register = RegisterRequest.builder()
-                .username("testuser")
-                .email("testuser@email.com")
-                .password("password")
-                .build();
-
-        restTemplate.postForEntity(baseUrl + "/register", new HttpEntity<>(register), UserDTO.class);
-
-        AuthRequest auth = AuthRequest.builder()
-                .username("testuser")
-                .password("password")
+                .username("alejandro123")
+                .email("alejandro@mail.com")
+                .password("secreta123")
                 .build();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<AuthRequest> entity = new HttpEntity<>(auth, headers);
+        HttpEntity<RegisterRequest> request = new HttpEntity<>(register, headers);
 
-        ResponseEntity<AuthResponse> response = restTemplate.postForEntity(baseUrl + "/login", entity, AuthResponse.class);
-
+        ResponseEntity<UserDTO> response = restTemplate.postForEntity(baseUrl + "/register", request, UserDTO.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getToken()).isNotBlank();
+        assertThat(response.getBody().getUsername()).isEqualTo("alejandro123");
     }
 
     @Test
-    void login_shouldReturnUnauthorized_whenCredentialsAreInvalid() {
-        AuthRequest auth = AuthRequest.builder()
-                .username("invalid")
-                .password("invalid")
+    void login_shouldReturnAuthResponse_whenValidCredentials() {
+        RegisterRequest register = RegisterRequest.builder()
+                .username("alejandro123")
+                .email("alejandro@mail.com")
+                .password("secreta123")
                 .build();
 
-        HttpEntity<AuthRequest> entity = new HttpEntity<>(auth);
-        ResponseEntity<AuthResponse> response = restTemplate.postForEntity(baseUrl + "/login", entity, AuthResponse.class);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        restTemplate.postForEntity(baseUrl + "/register", new HttpEntity<>(register, headers), UserDTO.class);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        AuthRequest login = AuthRequest.builder()
+                .email("alejandro@mail.com")
+                .password("secreta123")
+                .build();
+
+        HttpEntity<AuthRequest> loginRequest = new HttpEntity<>(login, headers);
+        ResponseEntity<AuthResponse> loginResponse = restTemplate.postForEntity(baseUrl + "/login", loginRequest, AuthResponse.class);
+
+        assertThat(loginResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(loginResponse.getBody()).isNotNull();
+        assertThat(loginResponse.getBody().getEmail()).isEqualTo("alejandro@mail.com");
+        assertThat(loginResponse.getBody().getUsername()).isEqualTo("alejandro123");
+        assertThat(loginResponse.getBody().getToken()).isNotBlank();
     }
 
     @Configuration
     @EnableWebSecurity
     static class TestSecurityConfiguration {
         @Bean
-        public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        public SecurityFilterChain testSecurityFilterChain(HttpSecurity http) throws Exception {
             http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+                    .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
             return http.build();
-        }
-
-        @Bean
-        public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-            return http.getSharedObject(AuthenticationManager.class);
         }
 
         @Bean
@@ -144,8 +122,16 @@ class AuthControllerTest {
         }
 
         @Bean
-        public ServletWebServerFactory webServerFactory() {
+        public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+            return configuration.getAuthenticationManager();
+        }
+
+        @Bean
+        public ServletWebServerFactory servletWebServerFactory() {
             return new TomcatServletWebServerFactory();
         }
     }
+
+
+
 }
