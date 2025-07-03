@@ -6,6 +6,7 @@ import com.aleprimo.plantilla_backend.repository.RoleRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -38,7 +39,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 )
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-@Transactional
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+
 class RoleControllerTest {
 
     @LocalServerPort
@@ -51,17 +53,17 @@ class RoleControllerTest {
     private RoleRepository roleRepository;
 
     private String baseUrl;
+    private Role savedRole;
 
     @BeforeEach
     void setUp() {
         baseUrl = "http://localhost:" + port + "/api/roles";
-        Role role = Role.builder().name(RoleName.ROLE_TEST).build();
-        Role savedRole = roleRepository.save(role);
+        savedRole = roleRepository.saveAndFlush(Role.builder().name(RoleName.ROLE_TEST).build());
     }
 
     @Test
     void createRole_shouldReturnCreated() {
-        RoleDTO role = RoleDTO.builder().name(RoleName.ROLE_TEST).build();
+        RoleDTO role = RoleDTO.builder().name(RoleName.ROLE_ADMIN).build();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -69,6 +71,15 @@ class RoleControllerTest {
 
         ResponseEntity<RoleDTO> response = restTemplate.postForEntity(baseUrl + "/create", request, RoleDTO.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().getName()).isEqualTo(RoleName.ROLE_ADMIN);
+    }
+
+    @Test
+    void getRoleById_shouldReturnFound_whenValidId() {
+        ResponseEntity<RoleDTO> response = restTemplate.getForEntity(
+                baseUrl + "/id/" + savedRole.getId(), RoleDTO.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getName()).isEqualTo(RoleName.ROLE_TEST);
     }
@@ -78,20 +89,18 @@ class RoleControllerTest {
         ResponseEntity<RoleDTO> response = restTemplate.getForEntity(baseUrl + "/id/9999", RoleDTO.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
+
     @Test
-    void getRoleById_shouldReturnFound_whenValidId() {
-        Role saved = roleRepository.save(Role.builder().name(RoleName.ROLE_TEST).build());
-
-        ResponseEntity<RoleDTO> response = restTemplate.getForEntity(
-                baseUrl + "/id/" + saved.getId(), RoleDTO.class);
-
+    void getRoleByName_shouldReturnFound_whenValidName() {
+        ResponseEntity<RoleDTO> response = restTemplate.getForEntity(baseUrl + "/name/ROLE_TEST", RoleDTO.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getName()).isEqualTo(saved.getName());
+        assertThat(response.getBody().getName()).isEqualTo(RoleName.ROLE_TEST);
     }
+
     @Test
     void getRoleByName_shouldReturnNotFound_whenInvalidName() {
-        ResponseEntity<RoleDTO> response = restTemplate.getForEntity(baseUrl + "/name/ROLE_NON_EXISTENT", RoleDTO.class);
+        ResponseEntity<RoleDTO> response = restTemplate.getForEntity(baseUrl + "/name/ROLE_ADMIN", RoleDTO.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
@@ -99,18 +108,16 @@ class RoleControllerTest {
     void getAllRoles_shouldReturnOk() {
         ResponseEntity<RoleDTO[]> response = restTemplate.getForEntity(baseUrl + "/all", RoleDTO[].class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().length).isGreaterThan(0); // hay al menos un rol
+        assertThat(response.getBody()).isNotEmpty();
+        assertThat(response.getBody()[0].getName()).isEqualTo(RoleName.ROLE_TEST);
     }
 
     @Test
-    void deleteRole_shouldReturnNoContent_whenIdNotExists() {
+    void deleteRole_shouldReturnNoContent_whenIdExists() {
         ResponseEntity<Void> response = restTemplate.exchange(
-                baseUrl + "/delete/9999", HttpMethod.DELETE, null, Void.class);
+                baseUrl + "/delete/" + savedRole.getId(), HttpMethod.DELETE, null, Void.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
     }
-
-
 
     @Configuration
     static class TestSecurityConfiguration {
@@ -121,7 +128,6 @@ class RoleControllerTest {
             return http.build();
         }
 
-
         @Bean
         public ServletWebServerFactory servletWebServerFactory() {
             return new TomcatServletWebServerFactory();
@@ -131,13 +137,12 @@ class RoleControllerTest {
         public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
             return configuration.getAuthenticationManager();
         }
+
         @Bean
         public PasswordEncoder passwordEncoder() {
             return new BCryptPasswordEncoder();
         }
     }
-
-
 
 
 }
