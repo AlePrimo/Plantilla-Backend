@@ -22,6 +22,9 @@ public class UserMapper {
                 .password(user.getPassword())
                 .enabled(user.getEnabled())
                 .createdDate(user.getCreatedDate())
+                .createdBy(user.getCreatedBy())
+                .lastModifiedBy(user.getLastModifiedBy())
+                .lastModifiedDate(user.getLastModifiedDate())
                 .roles(
                         user.getRoles() != null ?
                                 user.getRoles().stream()
@@ -49,10 +52,12 @@ public class UserMapper {
                 .password(dto.getPassword())
                 .enabled(dto.getEnabled())
                 .createdDate(dto.getCreatedDate())
+                .createdBy(dto.getCreatedBy())
+                .lastModifiedBy(dto.getLastModifiedBy())
+                .lastModifiedDate(dto.getLastModifiedDate())
                 .roles(roles)
                 .build();
     }
-
 
 
 }

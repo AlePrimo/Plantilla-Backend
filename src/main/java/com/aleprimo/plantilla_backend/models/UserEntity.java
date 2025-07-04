@@ -5,6 +5,7 @@ import com.aleprimo.plantilla_backend.config.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -18,7 +19,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Builder
+@SuperBuilder(toBuilder = true)
 public class UserEntity extends Auditable {
 
     @Id
@@ -38,9 +39,7 @@ public class UserEntity extends Auditable {
     )
     Set<Role>  roles;
     Boolean enabled;
-    @CreationTimestamp
-    @Column(name = "created_date", updatable = false)
-    LocalDateTime createdDate;
+
 
 
 }

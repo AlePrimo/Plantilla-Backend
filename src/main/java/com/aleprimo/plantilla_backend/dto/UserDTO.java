@@ -50,5 +50,15 @@ public class UserDTO {
     private Boolean enabled;
 
 
+    @Schema(description = "Nombre del creador del usuario", example = "admin")
+    private String createdBy;
+
+    @Schema(description = "Último usuario que modificó", example = "moderador01")
+    private String lastModifiedBy;
+
+    @Schema(description = "Fecha de última modificación", example = "2025-07-01T10:15:00")
+    private LocalDateTime lastModifiedDate;
+
+
 
 }
