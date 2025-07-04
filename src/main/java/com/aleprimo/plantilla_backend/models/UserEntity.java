@@ -1,5 +1,7 @@
 package com.aleprimo.plantilla_backend.models;
 
+
+import com.aleprimo.plantilla_backend.config.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -17,7 +19,7 @@ import java.util.Set;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class UserEntity {
+public class UserEntity extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
