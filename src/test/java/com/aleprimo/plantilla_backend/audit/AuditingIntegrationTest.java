@@ -54,6 +54,28 @@ class AuditingIntegrationTest {
         assertThat(savedUser.getLastModifiedDate()).isNotNull();
     }
 
+    @Test
+    void whenUpdatingUser_thenLastModifiedFieldsShouldBeUpdated() {
+        UserEntity user = UserEntity.builder()
+                .username("audittest2")
+                .email("audittest2@example.com")
+                .password("securepass")
+                .enabled(true)
+                .roles(Set.of())
+                .build();
+
+        UserEntity savedUser = userRepository.save(user);
+
+        savedUser.setUsername("audittest2_updated");
+        UserEntity updatedUser = userRepository.save(savedUser);
+
+        assertThat(updatedUser.getLastModifiedDate())
+                .isAfterOrEqualTo(updatedUser.getCreatedDate());
+
+        assertThat(updatedUser.getLastModifiedBy()).isEqualTo("test-user");
+    }
+
+
     @Configuration
     static class TestSecurityConfiguration {
         @Bean
