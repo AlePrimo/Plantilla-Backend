@@ -9,10 +9,7 @@ import com.aleprimo.plantilla_backend.models.UserEntity;
 import com.aleprimo.plantilla_backend.repository.RoleRepository;
 import com.aleprimo.plantilla_backend.repository.UserRepository;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.validation.Valid;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,19 +25,21 @@ import org.springframework.context.annotation.Configuration;
 
 import org.springframework.http.*;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -174,9 +173,10 @@ class UserControllerTest {
 
     @Test
     void changePassword_shouldUpdatePasswordSuccessfully() {
-        // Crear un usuario con contraseña codificada
+        // Contraseña sin codificar
         String rawPassword = "originalPass123";
 
+        // Crear usuario con contraseña codificada
         String encodedPassword = passwordEncoder.encode(rawPassword);
 
         UserEntity user = UserEntity.builder()
@@ -189,7 +189,12 @@ class UserControllerTest {
 
         userRepository.save(user);
 
-        // Crear solicitud de cambio de contraseña
+        // Simular autenticación del usuario en el SecurityContext
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(user.getEmail(), null, List.of())
+        );
+
+        // Armar la solicitud
         ChangePasswordRequest changePasswordRequest = ChangePasswordRequest.builder()
                 .currentPassword(rawPassword)
                 .newPassword("nuevaClaveSegura456")
@@ -200,40 +205,24 @@ class UserControllerTest {
 
         HttpEntity<ChangePasswordRequest> request = new HttpEntity<>(changePasswordRequest, headers);
 
-        // Ejecutar PUT al endpoint
+        // Ejecutar el PUT al endpoint
         ResponseEntity<String> response = restTemplate.exchange(
                 baseUrl + "/change-password",
                 HttpMethod.PUT,
                 request,
-                String.class,
-                PrincipalMock.of(user.getEmail()) // simulamos principal con el email
+                String.class
         );
 
         // Verificar respuesta
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualTo("Contraseña actualizada exitosamente");
 
-        // Verificar que se haya actualizado la contraseña
+        // Verificar persistencia de la nueva contraseña
         UserEntity updatedUser = userRepository.findByEmail(user.getEmail()).orElseThrow();
         assertThat(passwordEncoder.matches("nuevaClaveSegura456", updatedUser.getPassword())).isTrue();
     }
 
-    static class PrincipalMock implements Principal {
-        private final String name;
 
-        private PrincipalMock(String name) {
-            this.name = name;
-        }
-
-        public static Principal of(String name) {
-            return new PrincipalMock(name);
-        }
-
-        @Override
-        public String getName() {
-            return name;
-        }
-    }
 
 
     @Configuration

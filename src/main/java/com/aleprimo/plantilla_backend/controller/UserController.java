@@ -15,6 +15,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -153,19 +154,18 @@ public class UserController {
         userService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
     @Operation(summary = "Cambiar la contraseña del usuario autenticado")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Contraseña cambiada exitosamente"),
             @ApiResponse(responseCode = "400", description = "Contraseña actual incorrecta")
     })
     @PutMapping("/change-password")
-    public ResponseEntity<String> changePassword(@RequestBody @Valid ChangePasswordRequest request,
-                                                 Principal principal) {
-        userService.changePassword(principal.getName(), request);
+    public ResponseEntity<String> changePassword(@RequestBody @Valid ChangePasswordRequest request) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        userService.changePassword(email, request);
         return ResponseEntity.ok("Contraseña actualizada exitosamente");
     }
-
-
 
 
 }
