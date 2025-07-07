@@ -2,6 +2,7 @@ package com.aleprimo.plantilla_backend.controller;
 
 
 import com.aleprimo.plantilla_backend.controller.mappers.UserMapper;
+import com.aleprimo.plantilla_backend.dto.ChangePasswordRequest;
 import com.aleprimo.plantilla_backend.dto.UserDTO;
 import com.aleprimo.plantilla_backend.models.RoleName;
 import com.aleprimo.plantilla_backend.models.UserEntity;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -150,6 +152,17 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+    @Operation(summary = "Cambiar la contraseña del usuario autenticado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Contraseña cambiada exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Contraseña actual incorrecta")
+    })
+    @PutMapping("/change-password")
+    public ResponseEntity<String> changePassword(@RequestBody @Valid ChangePasswordRequest request,
+                                                 Principal principal) {
+        userService.changePassword(principal.getName(), request);
+        return ResponseEntity.ok("Contraseña actualizada exitosamente");
     }
 
 

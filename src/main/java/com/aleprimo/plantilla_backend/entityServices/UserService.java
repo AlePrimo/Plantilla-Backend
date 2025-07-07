@@ -1,5 +1,6 @@
 package com.aleprimo.plantilla_backend.entityServices;
 
+import com.aleprimo.plantilla_backend.dto.ChangePasswordRequest;
 import com.aleprimo.plantilla_backend.models.RoleName;
 import com.aleprimo.plantilla_backend.models.UserEntity;
 import org.springframework.data.jpa.repository.Query;
@@ -21,5 +22,7 @@ public interface UserService {
     List<UserEntity> findByEnabledTrue();
     @Query("SELECT u FROM UserEntity u JOIN u.roles r WHERE r.name = :roleName")
     List<UserEntity> findByRoleName(@Param("roleName") RoleName roleName);
+    void changePassword(String email, ChangePasswordRequest request);
+
 
 }

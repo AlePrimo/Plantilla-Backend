@@ -1,6 +1,8 @@
 package com.aleprimo.plantilla_backend.entityServices.implementations;
 
+import com.aleprimo.plantilla_backend.dto.ChangePasswordRequest;
 import com.aleprimo.plantilla_backend.handler.exceptions.RoleNotFoundException;
+import com.aleprimo.plantilla_backend.handler.exceptions.UserNotFoundException;
 import com.aleprimo.plantilla_backend.handler.exceptions.UsernameAlreadyExistsException;
 import com.aleprimo.plantilla_backend.models.Role;
 import com.aleprimo.plantilla_backend.models.RoleName;
@@ -90,5 +92,18 @@ this.userDAO.deleteById(id);
     @Override
     public List<UserEntity> findByRoleName(RoleName roleName) {
         return this.userDAO.findByRoleName(roleName);
+    }
+
+    @Override
+    public void changePassword(String email, ChangePasswordRequest request) {
+        UserEntity user = userDAO.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("email", email));
+
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("La contraseña actual es incorrecta");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userDAO.save(user);
     }
 }
