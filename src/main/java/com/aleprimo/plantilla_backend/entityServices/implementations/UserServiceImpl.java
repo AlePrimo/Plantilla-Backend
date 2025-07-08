@@ -95,13 +95,17 @@ this.userDAO.deleteById(id);
     }
 
     @Override
-    public void changePassword(String email, ChangePasswordRequest request) {
-        UserEntity user = userDAO.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("email", email));
+    public void changePassword(String usernameOrEmail, ChangePasswordRequest request) {
+
+        UserEntity user = userDAO.findByUsername(usernameOrEmail)
+                .or(() -> userDAO.findByEmail(usernameOrEmail))
+                .orElseThrow(() -> new UserNotFoundException("username o email", usernameOrEmail));
+
 
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
             throw new IllegalArgumentException("La contraseña actual es incorrecta");
         }
+
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userDAO.save(user);

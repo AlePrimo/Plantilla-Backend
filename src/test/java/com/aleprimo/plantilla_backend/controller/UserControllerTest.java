@@ -10,6 +10,7 @@ import com.aleprimo.plantilla_backend.repository.RoleRepository;
 import com.aleprimo.plantilla_backend.repository.UserRepository;
 
 
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -189,7 +190,7 @@ class UserControllerTest {
 
         userRepository.save(user);
 
-        // Simular autenticación del usuario en el SecurityContext
+        // Simular autenticación con el email (ya que el service busca por email)
         SecurityContextHolder.getContext().setAuthentication(
                 new UsernamePasswordAuthenticationToken(user.getEmail(), null, List.of())
         );

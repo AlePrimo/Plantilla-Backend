@@ -158,12 +158,13 @@ public class UserController {
     @Operation(summary = "Cambiar la contraseña del usuario autenticado")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Contraseña cambiada exitosamente"),
-            @ApiResponse(responseCode = "400", description = "Contraseña actual incorrecta")
+            @ApiResponse(responseCode = "400", description = "Contraseña actual incorrecta"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
     @PutMapping("/change-password")
     public ResponseEntity<String> changePassword(@RequestBody @Valid ChangePasswordRequest request) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        userService.changePassword(email, request);
+        String usernameOrEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        userService.changePassword(usernameOrEmail, request);
         return ResponseEntity.ok("Contraseña actualizada exitosamente");
     }
 
