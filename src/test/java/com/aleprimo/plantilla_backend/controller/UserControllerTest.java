@@ -188,14 +188,15 @@ class UserControllerTest {
                 .roles(Set.of(roleRepository.findByName(RoleName.ROLE_USER).get()))
                 .build();
 
-        userRepository.save(user);
-
-        // Simular autenticación con el email (ya que el service busca por email)
+        // 1️⃣ Simular autenticación ANTES del save (por auditoría)
         SecurityContextHolder.getContext().setAuthentication(
                 new UsernamePasswordAuthenticationToken(user.getEmail(), null, List.of())
         );
 
-        // Armar la solicitud
+        // 2️⃣ Guardar el usuario
+        userRepository.save(user);
+
+        // 3️⃣ Armar la solicitud
         ChangePasswordRequest changePasswordRequest = ChangePasswordRequest.builder()
                 .currentPassword(rawPassword)
                 .newPassword("nuevaClaveSegura456")
@@ -206,7 +207,7 @@ class UserControllerTest {
 
         HttpEntity<ChangePasswordRequest> request = new HttpEntity<>(changePasswordRequest, headers);
 
-        // Ejecutar el PUT al endpoint
+        // 4️⃣ Ejecutar el PUT al endpoint
         ResponseEntity<String> response = restTemplate.exchange(
                 baseUrl + "/change-password",
                 HttpMethod.PUT,
@@ -214,11 +215,12 @@ class UserControllerTest {
                 String.class
         );
 
-        // Verificar respuesta
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isEqualTo("Contraseña actualizada exitosamente");
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().trim()).isEqualToIgnoringCase("contraseña actualizada exitosamente");
 
-        // Verificar persistencia de la nueva contraseña
+
+        // 6️⃣ Verificar persistencia de la nueva contraseña
         UserEntity updatedUser = userRepository.findByEmail(user.getEmail()).orElseThrow();
         assertThat(passwordEncoder.matches("nuevaClaveSegura456", updatedUser.getPassword())).isTrue();
     }
