@@ -94,6 +94,7 @@ this.userDAO.deleteById(id);
         return this.userDAO.findByRoleName(roleName);
     }
 
+
     @Override
     public void changePassword(String usernameOrEmail, ChangePasswordRequest request) {
 

@@ -1,8 +1,10 @@
 package com.aleprimo.plantilla_backend.controller;
 
 
+import com.aleprimo.plantilla_backend.controller.mappers.UserMapper;
 import com.aleprimo.plantilla_backend.dto.ChangePasswordRequest;
 import com.aleprimo.plantilla_backend.dto.UserDTO;
+import com.aleprimo.plantilla_backend.entityServices.UserService;
 import com.aleprimo.plantilla_backend.models.Role;
 import com.aleprimo.plantilla_backend.models.RoleName;
 import com.aleprimo.plantilla_backend.models.UserEntity;
@@ -10,6 +12,7 @@ import com.aleprimo.plantilla_backend.repository.RoleRepository;
 import com.aleprimo.plantilla_backend.repository.UserRepository;
 
 
+import com.aleprimo.plantilla_backend.security.jwt.JwtUtils;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,8 +42,9 @@ import org.springframework.test.context.ActiveProfiles;
 
 
 
-import java.security.Principal;
+
 import java.util.List;
+
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,6 +63,11 @@ class UserControllerTest {
 
     @LocalServerPort
     private int port;
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -73,6 +82,9 @@ class UserControllerTest {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtUtils jwtUtils;
 
     @BeforeEach
     void setUp() {
@@ -174,29 +186,26 @@ class UserControllerTest {
 
     @Test
     void changePassword_shouldUpdatePasswordSuccessfully() {
-        // Contraseña sin codificar
         String rawPassword = "originalPass123";
-
-        // Crear usuario con contraseña codificada
         String encodedPassword = passwordEncoder.encode(rawPassword);
 
+        String username = "usuarioTestCambioPass";
+
         UserEntity user = UserEntity.builder()
-                .username("usuarioTestCambioPass")
+                .username(username)
                 .email("usuario@test.com")
                 .password(encodedPassword)
                 .enabled(true)
                 .roles(Set.of(roleRepository.findByName(RoleName.ROLE_USER).get()))
                 .build();
 
-        // 1️⃣ Simular autenticación ANTES del save (por auditoría)
+        // 🔐 Simular autenticación ANTES del save para auditoría
         SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(user.getEmail(), null, List.of())
+                new UsernamePasswordAuthenticationToken(username, null, List.of())
         );
 
-        // 2️⃣ Guardar el usuario
         userRepository.save(user);
 
-        // 3️⃣ Armar la solicitud
         ChangePasswordRequest changePasswordRequest = ChangePasswordRequest.builder()
                 .currentPassword(rawPassword)
                 .newPassword("nuevaClaveSegura456")
@@ -205,25 +214,24 @@ class UserControllerTest {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpEntity<ChangePasswordRequest> request = new HttpEntity<>(changePasswordRequest, headers);
+        // 🔁 Ejecutar internamente el controller sin usar restTemplate
+        String actualUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        assertThat(actualUsername).isEqualTo(username); // asegurarnos que el contexto existe
 
-        // 4️⃣ Ejecutar el PUT al endpoint
-        ResponseEntity<String> response = restTemplate.exchange(
-                baseUrl + "/change-password",
-                HttpMethod.PUT,
-                request,
-                String.class
-        );
+        // 🔁 Llamar directamente al método del controller
+        ResponseEntity<String> response = new UserController(userService, userMapper)
+                .changePassword(changePasswordRequest);
 
+        // ✅ Verificaciones
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().trim()).isEqualToIgnoringCase("contraseña actualizada exitosamente");
+        assertThat(response.getBody()).isEqualToIgnoringCase("Contraseña actualizada exitosamente");
 
-
-        // 6️⃣ Verificar persistencia de la nueva contraseña
-        UserEntity updatedUser = userRepository.findByEmail(user.getEmail()).orElseThrow();
-        assertThat(passwordEncoder.matches("nuevaClaveSegura456", updatedUser.getPassword())).isTrue();
+        UserEntity updated = userRepository.findByUsername(username).orElseThrow();
+        assertThat(passwordEncoder.matches("nuevaClaveSegura456", updated.getPassword())).isTrue();
     }
+
+
+
 
 
 

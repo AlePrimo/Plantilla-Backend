@@ -161,12 +161,14 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Contraseña actual incorrecta"),
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
+
     @PutMapping("/change-password")
     public ResponseEntity<String> changePassword(@RequestBody @Valid ChangePasswordRequest request) {
-        String usernameOrEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        userService.changePassword(usernameOrEmail, request);
+        String username = SecurityContextHolder.getContext().getAuthentication().getName(); // ← el JWT devuelve el username
+        userService.changePassword(username, request);
         return ResponseEntity.ok("Contraseña actualizada exitosamente");
     }
+
 
 
 }

@@ -22,7 +22,8 @@ public interface UserService {
     List<UserEntity> findByEnabledTrue();
     @Query("SELECT u FROM UserEntity u JOIN u.roles r WHERE r.name = :roleName")
     List<UserEntity> findByRoleName(@Param("roleName") RoleName roleName);
-    void changePassword(String email, ChangePasswordRequest request);
+    void changePassword(String usernameOrEmail, ChangePasswordRequest request);
+
 
 
 }
