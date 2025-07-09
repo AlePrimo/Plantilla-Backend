@@ -10,23 +10,17 @@ import com.aleprimo.plantilla_backend.models.RoleName;
 import com.aleprimo.plantilla_backend.models.UserEntity;
 import com.aleprimo.plantilla_backend.repository.RoleRepository;
 import com.aleprimo.plantilla_backend.repository.UserRepository;
-
-
 import com.aleprimo.plantilla_backend.security.jwt.JwtUtils;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
-
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import org.springframework.http.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -162,7 +156,7 @@ class UserControllerTest {
         UserDTO user = UserDTO.builder()
                 .username("usuarioInexistenteXYZ")
                 .email("inexistenteXYZ@mail.com")
-                .password("contrasenaValida123") // al menos 6 caracteres
+                .password("contrasenaValida123")
                 .build();
 
         HttpHeaders headers = new HttpHeaders();
@@ -199,7 +193,7 @@ class UserControllerTest {
                 .roles(Set.of(roleRepository.findByName(RoleName.ROLE_USER).get()))
                 .build();
 
-        // 🔐 Simular autenticación ANTES del save para auditoría
+
         SecurityContextHolder.getContext().setAuthentication(
                 new UsernamePasswordAuthenticationToken(username, null, List.of())
         );
@@ -214,15 +208,15 @@ class UserControllerTest {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        // 🔁 Ejecutar internamente el controller sin usar restTemplate
+
         String actualUsername = SecurityContextHolder.getContext().getAuthentication().getName();
         assertThat(actualUsername).isEqualTo(username); // asegurarnos que el contexto existe
 
-        // 🔁 Llamar directamente al método del controller
+
         ResponseEntity<String> response = new UserController(userService, userMapper)
                 .changePassword(changePasswordRequest);
 
-        // ✅ Verificaciones
+
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isEqualToIgnoringCase("Contraseña actualizada exitosamente");
 
