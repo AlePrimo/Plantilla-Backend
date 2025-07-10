@@ -7,11 +7,15 @@ import com.aleprimo.plantilla_backend.entityServices.implementations.RoleService
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.test.annotation.DirtiesContext;
+
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
 
+@DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
 class RoleServiceImplTest {
 
     @Mock

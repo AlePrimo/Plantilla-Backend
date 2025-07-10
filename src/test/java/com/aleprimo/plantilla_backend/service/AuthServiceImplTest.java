@@ -23,13 +23,16 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.Collections;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
 
+@DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
 class AuthServiceImplTest {
 
     @Mock private AuthenticationManager authManager;
