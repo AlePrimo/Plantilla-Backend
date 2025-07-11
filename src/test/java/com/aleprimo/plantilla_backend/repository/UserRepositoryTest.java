@@ -7,6 +7,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
@@ -29,8 +32,11 @@ class UserRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        Role role = Role.builder().name(RoleName.ROLE_USER).build();
-        roleRepository.save(role);
+        Role role = roleRepository.findByName(RoleName.valueOf("ROLE_USER")).orElseGet(() -> {
+            Role newRole = new Role();
+            newRole.setName(RoleName.valueOf("ROLE_USER"));
+            return roleRepository.save(newRole);
+        });
 
         user = UserEntity.builder()
                 .username("testuser")
@@ -65,9 +71,14 @@ class UserRepositoryTest {
 
     @Test
     void shouldFindByEnabledTrue() {
-        List<UserEntity> enabledUsers = userRepository.findByEnabledTrue();
-        assertThat(enabledUsers).hasSize(1);
+        Pageable pageable = PageRequest.of(0, 10); // página 0, tamaño 10
+
+        Page<UserEntity> enabledUsersPage = userRepository.findByEnabledTrue(pageable);
+
+        assertThat(enabledUsersPage.getContent()).hasSize(1);
+        assertThat(enabledUsersPage.getContent().get(0).getEnabled()).isTrue();
     }
+
 
     @Test
     void shouldFindByRoleName() {
