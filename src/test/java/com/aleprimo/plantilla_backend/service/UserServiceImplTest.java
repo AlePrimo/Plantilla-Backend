@@ -11,6 +11,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
 
@@ -92,11 +96,17 @@ public class UserServiceImplTest {
 
     @Test
     void shouldReturnAllUsers() {
-        when(userDAO.findAll()).thenReturn(List.of(user));
+        Pageable pageable = PageRequest.of(0, 10); // o el size que uses por defecto
+        Page<UserEntity> userPage = new PageImpl<>(List.of(user));
 
-        List<UserEntity> users = userService.findAll();
-        assertThat(users).hasSize(1);
+        when(userDAO.findAll(pageable)).thenReturn(userPage);
+
+        Page<UserEntity> result = userService.findAll(pageable);
+
+        assertThat(result.getContent()).hasSize(1);
+        assertThat(result.getContent().get(0)).isEqualTo(user);
     }
+
 
     @Test
     void shouldDeleteUserById() {
@@ -138,10 +148,15 @@ public class UserServiceImplTest {
 
     @Test
     void shouldFindEnabledUsers() {
-        when(userDAO.findByEnabledTrue()).thenReturn(List.of(user));
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<UserEntity> userPage = new PageImpl<>(List.of(user));
 
-        List<UserEntity> users = userService.findByEnabledTrue();
-        assertThat(users).hasSize(1);
+        when(userDAO.findByEnabledTrue(pageable)).thenReturn(userPage);
+
+        Page<UserEntity> result = userService.findByEnabledTrue(pageable);
+
+        assertThat(result.getContent()).hasSize(1);
+        assertThat(result.getContent().get(0)).isEqualTo(user);
     }
 
     @Test
