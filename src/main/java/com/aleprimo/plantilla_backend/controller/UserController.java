@@ -13,6 +13,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -92,27 +95,8 @@ public class UserController {
         return ResponseEntity.ok(userService.existsByEmail(email));
     }
 
-    @Operation(summary = "Listar todos los usuarios")
-    @ApiResponse(responseCode = "200", description = "Lista de usuarios obtenida correctamente")
-    @GetMapping("/all")
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
-        List<UserDTO> users = userService.findAll()
-                .stream()
-                .map(userMapper::toDto)
-                .toList();
-        return ResponseEntity.ok(users);
-    }
 
-    @Operation(summary = "Listar usuarios habilitados")
-    @ApiResponse(responseCode = "200", description = "Lista de usuarios habilitados obtenida correctamente")
-    @GetMapping("/enabled")
-    public ResponseEntity<List<UserDTO>> getEnabledUsers() {
-        List<UserDTO> users = userService.findByEnabledTrue()
-                .stream()
-                .map(userMapper::toDto)
-                .toList();
-        return ResponseEntity.ok(users);
-    }
+
 
     @Operation(summary = "Listar usuarios por rol")
     @ApiResponses(value = {
@@ -171,27 +155,27 @@ public class UserController {
 
 
 
-//    @Operation(summary = "Listar usuarios habilitados con paginación")
-//    @ApiResponse(responseCode = "200", description = "Página de usuarios habilitados obtenida correctamente")
-//    @GetMapping("/enabled")
-//    public ResponseEntity<Page<UserDTO>> getEnabledUsers(
-//            @ParameterObject Pageable pageable
-//    ) {
-//        Page<UserDTO> users = userService.findByEnabledTrue(pageable)
-//                .map(userMapper::toDto);
-//        return ResponseEntity.ok(users);
-//    }
-//
-//    @Operation(summary = "Listar todos los usuarios con paginación")
-//    @ApiResponse(responseCode = "200", description = "Página de usuarios obtenida correctamente")
-//    @GetMapping("/all")
-//    public ResponseEntity<Page<UserDTO>> getAllUsers(
-//            @ParameterObject Pageable pageable
-//    ) {
-//        Page<UserDTO> users = userService.findAll(pageable)
-//                .map(userMapper::toDto);
-//        return ResponseEntity.ok(users);
-//    }
+    @Operation(summary = "Listar usuarios habilitados con paginación")
+    @ApiResponse(responseCode = "200", description = "Página de usuarios habilitados obtenida correctamente")
+    @GetMapping("/enabled")
+    public ResponseEntity<Page<UserDTO>> getEnabledUsers(
+            @ParameterObject Pageable pageable
+    ) {
+        Page<UserDTO> users = userService.findByEnabledTrue(pageable)
+                .map(userMapper::toDto);
+        return ResponseEntity.ok(users);
+    }
+
+    @Operation(summary = "Listar todos los usuarios con paginación")
+    @ApiResponse(responseCode = "200", description = "Página de usuarios obtenida correctamente")
+    @GetMapping("/all")
+    public ResponseEntity<Page<UserDTO>> getAllUsers(
+            @ParameterObject Pageable pageable
+    ) {
+        Page<UserDTO> users = userService.findAll(pageable)
+                .map(userMapper::toDto);
+        return ResponseEntity.ok(users);
+    }
 
 
 
