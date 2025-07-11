@@ -171,4 +171,30 @@ public class UserController {
 
 
 
+//    @Operation(summary = "Listar usuarios habilitados con paginación")
+//    @ApiResponse(responseCode = "200", description = "Página de usuarios habilitados obtenida correctamente")
+//    @GetMapping("/enabled")
+//    public ResponseEntity<Page<UserDTO>> getEnabledUsers(
+//            @ParameterObject Pageable pageable
+//    ) {
+//        Page<UserDTO> users = userService.findByEnabledTrue(pageable)
+//                .map(userMapper::toDto);
+//        return ResponseEntity.ok(users);
+//    }
+//
+//    @Operation(summary = "Listar todos los usuarios con paginación")
+//    @ApiResponse(responseCode = "200", description = "Página de usuarios obtenida correctamente")
+//    @GetMapping("/all")
+//    public ResponseEntity<Page<UserDTO>> getAllUsers(
+//            @ParameterObject Pageable pageable
+//    ) {
+//        Page<UserDTO> users = userService.findAll(pageable)
+//                .map(userMapper::toDto);
+//        return ResponseEntity.ok(users);
+//    }
+
+
+
+
+
 }

@@ -12,6 +12,8 @@ import com.aleprimo.plantilla_backend.persistence.UserDAO;
 
 import com.aleprimo.plantilla_backend.entityServices.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -55,8 +57,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserEntity> findAll() {
-        return this.userDAO.findAll();
+    public Page<UserEntity> findAll(Pageable pageable){
+        return this.userDAO.findAll(pageable);
     }
 
     @Override
@@ -85,8 +87,8 @@ this.userDAO.deleteById(id);
     }
 
     @Override
-    public List<UserEntity> findByEnabledTrue() {
-        return this.userDAO.findByEnabledTrue();
+    public Page<UserEntity> findByEnabledTrue(Pageable pageable) {
+        return this.userDAO.findByEnabledTrue(pageable);
     }
 
     @Override

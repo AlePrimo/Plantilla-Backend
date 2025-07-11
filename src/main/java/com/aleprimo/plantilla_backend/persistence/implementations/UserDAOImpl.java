@@ -5,6 +5,8 @@ import com.aleprimo.plantilla_backend.models.UserEntity;
 import com.aleprimo.plantilla_backend.persistence.UserDAO;
 import com.aleprimo.plantilla_backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -28,9 +30,10 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public List<UserEntity> findAll() {
-        return this.userRepository.findAll();
+    public Page<UserEntity> findAll(Pageable pageable) {
+        return this.userRepository.findAll(pageable);
     }
+
 
     @Override
     public void deleteById(Long id) {
@@ -59,9 +62,10 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public List<UserEntity> findByEnabledTrue() {
-        return this.userRepository.findByEnabledTrue();
+    public Page<UserEntity> findByEnabledTrue(Pageable pageable) {
+        return this.userRepository.findByEnabledTrue(pageable);
     }
+
 
     @Override
     public List<UserEntity> findByRoleName(RoleName roleName) {
