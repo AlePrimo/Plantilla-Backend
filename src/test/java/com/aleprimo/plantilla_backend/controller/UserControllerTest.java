@@ -96,9 +96,12 @@ class UserControllerTest {
 
 
     @Test
-    void getAllUsers_shouldReturnOk() {
-        ResponseEntity<UserDTO[]> response = restTemplate.getForEntity(baseUrl + "/all", UserDTO[].class);
+    void getAllUsers_shouldReturnPagedUsers() {
+        String url = baseUrl + "/all?page=0&size=10";
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).contains("content");
     }
 
     @Test
@@ -122,9 +125,12 @@ class UserControllerTest {
     }
 
     @Test
-    void getEnabledUsers_shouldReturnOk() {
-        ResponseEntity<UserDTO[]> response = restTemplate.getForEntity(baseUrl + "/enabled", UserDTO[].class);
+    void getEnabledUsers_shouldReturnPagedEnabledUsers() {
+        String url = baseUrl + "/enabled?page=0&size=10";
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).contains("content");
     }
 
     @Test
